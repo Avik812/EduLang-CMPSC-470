@@ -1,0 +1,85 @@
+// 1. Program Structure
+program        = { statement } ;
+
+// 2. Statements
+statement      = declaration
+               | assignment
+               | conditional
+               | loop
+               | function_def
+               | function_call ";"
+               | expression_statement ;
+
+expression_statement = expression ";" ;
+
+// 3. Declarations & Assignment
+declaration    = type identifier "=" expression ";" ;
+assignment     = identifier "=" expression ";" ;
+
+// 4. Control Flow
+conditional    = "if" "(" expression ")" block
+                 [ "else" block ] ;
+
+loop           = "while" "(" expression ")" block ;
+
+// 5. Functions
+function_def   = "func" identifier "(" [ parameter_list ] ")" block ;
+
+function_call  = identifier "(" [ argument_list ] ")" ;
+
+parameter_list = identifier { "," identifier } ;
+argument_list  = expression { "," expression } ;
+
+// 6. Blocks
+block          = "{" { statement } "}" ;
+
+// 7. Expressions & Precedence
+expression     = comparison ;
+
+comparison     = addition
+                 { ( "==" | "!=" | "<" | ">" | "<=" | ">=" ) addition } ;
+
+addition       = multiplication
+                 { ( "+" | "-" ) multiplication } ;
+
+multiplication = factor
+                 { ( "*" | "/" ) factor } ;
+
+factor         = identifier
+               | literal
+               | "(" expression ")" ;
+
+
+// 8. Literals
+literal        = integer
+               | float
+               | string
+               | boolean ;
+
+// 9. Types
+type           = "int"
+               | "float"
+               | "string"
+               | "bool" ;
+
+// 10. Lexical Structure
+identifier     = letter { letter | digit | "_" } ;
+
+letter         = "A" | … | "Z"
+               | "a" | … | "z"
+               | "_" ;
+
+digit          = "0" | … | "9" ;
+
+// 11. Reserved Keywords
+keyword        = "if" | "else" | "while" | "for" | "return"
+               | "int" | "float" | "string" | "bool" | "func"
+               | "print" | "input" | "true" | "false" | "null" ;
+
+// 12. Token Definitions
+// These are produced by the lexer:
+
+integer        = digit { digit } ;
+float          = digit { digit } "." digit { digit } ;
+string         = '"' { any_char - '"' } '"' ;
+boolean        = "true" | "false" ;
