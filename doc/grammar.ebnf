@@ -1,85 +1,47 @@
-// 1. Program Structure
-program        = { statement } ;
+(* ========================================================= *)
+(*  TOKEN DEFINITIONS          *)
+(* ========================================================= *)
+(*  NUMBER      → digits                                     *)
+(*  STRING      → " ... "                                    *)
+(*  IDENT       → variable/function names                    *)
+(*  KEYWORD     → if | else | print                          *)
+(*  OP          → >= | <= | == | != | = | + | - | * | /      *)
+(*  SYMBOLS     → ( ) { } ;                                   *)
+(* ========================================================= *)
 
-// 2. Statements
-statement      = declaration
-               | assignment
-               | conditional
-               | loop
-               | function_def
-               | function_call ";"
-               | expression_statement ;
+Program       ::= Statement* ;
 
-expression_statement = expression ";" ;
+(* ---------------- Statements ---------------- *)
 
-// 3. Declarations & Assignment
-declaration    = type identifier "=" expression ";" ;
-assignment     = identifier "=" expression ";" ;
+Statement     ::= Assignment ";"
+                | PrintStmt ";"
+                | IfStmt
+                | Block ;
 
-// 4. Control Flow
-conditional    = "if" "(" expression ")" block
-                 [ "else" block ] ;
+Assignment    ::= IDENT "=" Expression ;
 
-loop           = "while" "(" expression ")" block ;
+PrintStmt     ::= "print" "(" Expression ")" ;
 
-// 5. Functions
-function_def   = "func" identifier "(" [ parameter_list ] ")" block ;
+IfStmt        ::= "if" "(" Expression ")" Statement
+                ( "else" Statement )? ;
 
-function_call  = identifier "(" [ argument_list ] ")" ;
+Block         ::= "{" Statement* "}" ;
 
-parameter_list = identifier { "," identifier } ;
-argument_list  = expression { "," expression } ;
+(* ---------------- Expressions ---------------- *)
 
-// 6. Blocks
-block          = "{" { statement } "}" ;
+Expression    ::= Equality ;
 
-// 7. Expressions & Precedence
-expression     = comparison ;
+Equality      ::= Comparison ( ( "==" | "!=" ) Comparison )* ;
 
-comparison     = addition
-                 { ( "==" | "!=" | "<" | ">" | "<=" | ">=" ) addition } ;
+Comparison    ::= Term ( ( ">=" | "<=" ) Term )* ;
 
-addition       = multiplication
-                 { ( "+" | "-" ) multiplication } ;
+Term          ::= Factor ( ( "+" | "-" ) Factor )* ;
 
-multiplication = factor
-                 { ( "*" | "/" ) factor } ;
+Factor        ::= Unary ( ( "*" | "/" ) Unary )* ;
 
-factor         = identifier
-               | literal
-               | "(" expression ")" ;
+Unary         ::= ( "-" )? Primary ;
 
-
-// 8. Literals
-literal        = integer
-               | float
-               | string
-               | boolean ;
-
-// 9. Types
-type           = "int"
-               | "float"
-               | "string"
-               | "bool" ;
-
-// 10. Lexical Structure
-identifier     = letter { letter | digit | "_" } ;
-
-letter         = "A" | … | "Z"
-               | "a" | … | "z"
-               | "_" ;
-
-digit          = "0" | … | "9" ;
-
-// 11. Reserved Keywords
-keyword        = "if" | "else" | "while" | "for" | "return"
-               | "int" | "float" | "string" | "bool" | "func"
-               | "print" | "input" | "true" | "false" | "null" ;
-
-// 12. Token Definitions
-// These are produced by the lexer:
-
-integer        = digit { digit } ;
-float          = digit { digit } "." digit { digit } ;
-string         = '"' { any_char - '"' } '"' ;
-boolean        = "true" | "false" ;
+Primary       ::= NUMBER
+                | STRING
+                | IDENT
+                | "(" Expression ")" ;
