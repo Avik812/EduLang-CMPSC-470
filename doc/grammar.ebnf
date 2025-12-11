@@ -1,5 +1,5 @@
 (* ========================================================= *)
-(*  TOKEN DEFINITIONS          *)
+(*  TOKEN DEFINITIONS                                        *)
 (* ========================================================= *)
 (*  NUMBER      → digits                                     *)
 (*  STRING      → " ... "                                    *)
@@ -13,17 +13,17 @@ Program       ::= Statement* ;
 
 (* ---------------- Statements ---------------- *)
 
-Statement     ::= Assignment ";"
-                | PrintStmt ";"
+Statement     ::= Assignment ";" 
+                | PrintStmt
                 | IfStmt
                 | Block ;
 
 Assignment    ::= IDENT "=" Expression ;
 
-PrintStmt     ::= "print" "(" Expression ")" ;
+PrintStmt     ::= "print" "(" Expression ")" ";" ;
 
-IfStmt        ::= "if" "(" Expression ")" Statement
-                ( "else" Statement )? ;
+IfStmt        ::= "if" "(" Expression ")" Block
+                ( "else" Block )? ;
 
 Block         ::= "{" Statement* "}" ;
 
