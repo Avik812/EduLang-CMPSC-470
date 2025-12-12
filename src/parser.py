@@ -48,7 +48,18 @@ class Parser:
     # term → NUMBER | STRING | IDENT | "(" expr ")"
 
     def parse(self):
-        return self.parse_block()
+        # Parse top-level as a sequence of statements. If the file contains
+        # a single top-level block, return that block (preserve previous
+        # behavior). Otherwise return a BlockNode containing all top-level
+        # statements.
+        statements = []
+        while self.peek():
+            statements.append(self.parse_statement())
+
+        if len(statements) == 1 and isinstance(statements[0], BlockNode):
+            return statements[0]
+
+        return BlockNode(statements)
 
     def parse_block(self):
         statements = []
@@ -68,6 +79,9 @@ class Parser:
 
         if token == ("KEYWORD", "if"):
             return self.parse_if()
+
+        if token and token[0] == "LBRACE":
+            return self.parse_block()
 
         # assignment: IDENT = expr ;
         if token and token[0] == "IDENT":
