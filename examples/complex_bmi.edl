@@ -1,21 +1,21 @@
 {
-    
-    weight = 68;        
-    height_cm = 170;    
+    // Simple BMI calculator using assignments, arithmetic and nested ifs
+    weight = 68;        // kilograms
+    height_cm = 170;    // centimeters
 
-    
+    // convert to meters and compute BMI
     height_m = height_cm / 100;
     bmi = weight / (height_m * height_m);
 
     print(bmi);
 
-    if (bmi <= 17) {
+    if (bmi < 18) {
         print("Underweight");
     } else {
-        if (bmi <= 24) {
+        if (bmi < 25) {
             print("Normal weight");
         } else {
-            if (bmi <= 29) {
+            if (bmi < 30) {
                 print("Overweight");
             } else {
                 print("Obese");
