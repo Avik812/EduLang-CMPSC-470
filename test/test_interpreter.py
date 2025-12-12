@@ -76,3 +76,19 @@ def test_undefined_identifier_raises():
     out, writer = capture_output()
     with pytest.raises(NameError):
         interpret(ast, output=writer)
+
+
+def test_assignment_and_update():
+    code = """
+    {
+        x = 5;
+        print(x);
+        x = x + 2;
+        print(x);
+    }
+    """
+
+    ast = parse(code)
+    out, writer = capture_output()
+    interpret(ast, output=writer)
+    assert out == ["5", "7"]
