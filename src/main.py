@@ -8,7 +8,7 @@ check, and then executes the program with the interpreter. Use `--var` to
 provide runtime variables (e.g. `--var age=20`).
 
 Assignment operator now works, so variables can now be defined in test code.
-See test/edulang_file_test_0.py for an example.
+See test/edulang_file_test_0.txt for an example.
 """
 
 import argparse
@@ -72,3 +72,4 @@ def main(argv=None):
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
