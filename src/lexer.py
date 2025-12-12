@@ -6,7 +6,11 @@ TOKEN_TYPES = [
     ("NUMBER",      r"\d+"),
     ("STRING",      r'"([^"\\]|\\.)*"'),
     ("IDENT",       r"[A-Za-z_][A-Za-z0-9_]*"),
-    ("OP",          r"(>=|<=|==|!=|=|\+|\-|\*|/)"),
+    # comments (skip): C-style single-line '//' and multi-line '/* ... */'
+    ("COMMENT",     r"//[^\n]*"),
+    ("COMMENT",     r"/\*[\s\S]*?\*/"),
+    # now includes single-char comparisons '<' and '>' in the OP pattern
+    ("OP",          r"(>=|<=|==|!=|=|>|<|\+|\-|\*|/)") ,
     ("LPAREN",      r"\("),
     ("RPAREN",      r"\)"),
     ("LBRACE",      r"\{"),
@@ -32,7 +36,8 @@ def lexer(code):
             if match:
                 text = match.group(0)
                 
-                if token_type == "WHITESPACE":
+                # now skips both whitespace and comments
+                if token_type == "WHITESPACE" or token_type == "COMMENT":
                     index += len(text)
                     match_found = True
                     break
