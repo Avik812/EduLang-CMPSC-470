@@ -30,6 +30,10 @@ Run an example EduLang program using the bundled CLI:
 ```powershell
 python -m src.main test\edulang_file_test_0.txt
 ```
+OR
+```powershell
+python -m src.main examples\complex_bmi.edl
+```
 
 You can pass runtime variables to the program with `--var name=value`:
 
