@@ -28,6 +28,7 @@ from .ast_nodes import (
     BinaryOpNode,
     LiteralNode,
     IdentifierNode,
+    AssignmentNode,
 )
 
 
@@ -54,6 +55,11 @@ class Interpreter:
             else:
                 self.output(val)
             return None
+
+        if isinstance(node, AssignmentNode):
+            val = self.eval(node.expr)
+            self.env[node.name] = val
+            return val
 
         if isinstance(node, IfNode):
             cond = self.eval(node.condition)
@@ -90,10 +96,6 @@ class Interpreter:
                 return left == right
             if op == "!=":
                 return left != right
-
-            # single '=' should be assignment, which isn't implemented yet
-            if op == "=":
-                raise RuntimeError("Assignment operator not supported at runtime (parser doesn't create assignment nodes yet)")
 
             raise RuntimeError(f"Unknown operator: {op}")
 
