@@ -23,6 +23,7 @@ from .ast_nodes import (
 	BinaryOpNode,
 	LiteralNode,
 	IdentifierNode,
+	AssignmentNode,
 )
 
 
@@ -45,6 +46,8 @@ class SemanticAnalyzer:
 	def __init__(self, known_globals: Optional[Set[str]] = None, strict: bool = False):
 		self.known_globals = set(known_globals or [])
 		self.strict = strict
+		# symbol table for variables assigned within the analyzed code
+		self.symbols = {}
 
 	def analyze(self, node):
 		"""Analyze `node` and return its type as a string.
@@ -58,6 +61,12 @@ class SemanticAnalyzer:
 
 		if isinstance(node, PrintNode):
 			self.analyze(node.expr)
+			return None
+
+		if isinstance(node, AssignmentNode):
+			# evaluate expression type then record variable
+			expr_t = self.analyze(node.expr)
+			self.symbols[node.name] = expr_t
 			return None
 
 		if isinstance(node, IfNode):
@@ -114,6 +123,9 @@ class SemanticAnalyzer:
 
 		if isinstance(node, IdentifierNode):
 			name = node.name
+			# first check local symbols recorded from assignments
+			if name in self.symbols:
+				return self.symbols[name]
 			if name in self.known_globals:
 				# we don't know the exact type of globals, treat as unknown
 				return "unknown"
