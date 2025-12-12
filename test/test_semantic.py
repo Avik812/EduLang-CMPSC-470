@@ -44,3 +44,17 @@ def test_equality_mismatch_raises():
     analyzer = SemanticAnalyzer()
     with pytest.raises(SemanticError):
         analyzer.analyze(ast)
+
+
+def test_assignment_records_type_and_allows_use():
+    ast = parse('{ x = 10; print(x); }')
+    analyzer = SemanticAnalyzer()
+    analyzer.analyze(ast)
+    assert analyzer.symbols.get('x') == 'number'
+
+
+def test_assignment_type_error_on_use():
+    ast = parse('{ x = "hi"; print(x + 1); }')
+    analyzer = SemanticAnalyzer()
+    with pytest.raises(SemanticError):
+        analyzer.analyze(ast)
