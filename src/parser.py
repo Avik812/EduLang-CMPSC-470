@@ -1,33 +1,14 @@
 # start for parser
 
-# AST Node Definitions
-class PrintNode:
-    def __init__(self, expr):
-        self.expr = expr
-
-class IfNode:
-    def __init__(self, condition, then_block, else_block):
-        self.condition = condition
-        self.then_block = then_block
-        self.else_block = else_block
-
-class BlockNode:
-    def __init__(self, statements):
-        self.statements = statements
-
-class BinaryOpNode:
-    def __init__(self, left, op, right):
-        self.left = left
-        self.op = op
-        self.right = right
-
-class LiteralNode:
-    def __init__(self, value):
-        self.value = value
-
-class IdentifierNode:
-    def __init__(self, name):
-        self.name = name
+# AST node classes are defined in `ast_nodes.py` so other passes can import them.
+from .ast_nodes import (
+    PrintNode,
+    IfNode,
+    BlockNode,
+    BinaryOpNode,
+    LiteralNode,
+    IdentifierNode,
+)
 
 
 # PARSER CLASS
