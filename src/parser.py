@@ -8,6 +8,7 @@ from .ast_nodes import (
     BinaryOpNode,
     LiteralNode,
     IdentifierNode,
+    AssignmentNode,
 )
 
 
@@ -21,6 +22,10 @@ class Parser:
     # Utility
     def peek(self):
         return self.tokens[self.index] if self.index < len(self.tokens) else None
+
+    def peek_next(self):
+        nxt = self.index + 1
+        return self.tokens[nxt] if nxt < len(self.tokens) else None
 
     def consume(self, expected_type=None):
         token = self.peek()
@@ -63,6 +68,20 @@ class Parser:
 
         if token == ("KEYWORD", "if"):
             return self.parse_if()
+
+        # assignment: IDENT = expr ;
+        if token and token[0] == "IDENT":
+            next_tok = self.peek_next()
+            if next_tok and next_tok[0] == "OP" and next_tok[1] == "=":
+                # parse assignment
+                name = self.consume()[1]
+                # consume '=' operator
+                op_tok = self.consume()
+                if op_tok[1] != "=":
+                    raise SyntaxError(f"Expected '=', got {op_tok}")
+                expr = self.parse_expression()
+                self.consume("SEMICOLON")
+                return AssignmentNode(name, expr)
 
         # expression ;
         expr = self.parse_expression()
