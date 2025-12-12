@@ -1,0 +1,9 @@
+{ eggs = 8; }
+{ print(eggs); }
+    {
+        if (eggs <= 6) {
+            print("You need to buy more eggs");
+        } else {
+            print("You have enough eggs!");
+        }
+    }
