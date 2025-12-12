@@ -1,0 +1,25 @@
+{
+    
+    weight = 68;        
+    height_cm = 170;    
+
+    
+    height_m = height_cm / 100;
+    bmi = weight / (height_m * height_m);
+
+    print(bmi);
+
+    if (bmi <= 17) {
+        print("Underweight");
+    } else {
+        if (bmi <= 24) {
+            print("Normal weight");
+        } else {
+            if (bmi <= 29) {
+                print("Overweight");
+            } else {
+                print("Obese");
+            }
+        }
+    }
+}
