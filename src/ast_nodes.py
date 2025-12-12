@@ -32,3 +32,8 @@ class LiteralNode:
 class IdentifierNode:
     def __init__(self, name):
         self.name = name
+
+class AssignmentNode:
+    def __init__(self, name, expr):
+        self.name = name
+        self.expr = expr
