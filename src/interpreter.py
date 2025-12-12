@@ -20,6 +20,8 @@ string values so host Python strings are used during evaluation.
 """
 
 from typing import Any, Dict, Optional
+from .scoped import ScopedEnv
+
 
 from .ast_nodes import (
     BlockNode,
@@ -32,21 +34,33 @@ from .ast_nodes import (
 )
 
 
+
+
 class Interpreter:
     def __init__(self, env: Optional[Dict[str, Any]] = None, output=None):
+        self.block_depth = 0
         # environment for identifiers
-        self.env = dict(env or {})
+        self.env = ScopedEnv(env)
         # output is a callable used for printing; default to built-in print
         self.output = output or print
 
     def eval(self, node):
         """Evaluate an AST node and return its value (or None for statements)."""
         if isinstance(node, BlockNode):
-            result = None
-            for stmt in node.statements:
-                result = self.eval(stmt)
-            return result
+            self.block_depth += 1
 
+            if self.block_depth > 1:
+                self.env.enter_scope()
+            try:               
+                result = None
+                for stmt in node.statements:
+                    result = self.eval(stmt)
+                return result
+            finally:
+                if self.block_depth > 1:
+                    self.env.exit_scope()
+                self.block_depth -= 1
+            
         if isinstance(node, PrintNode):
             val = self.eval(node.expr)
             # print strings without surrounding quotes
@@ -58,7 +72,7 @@ class Interpreter:
 
         if isinstance(node, AssignmentNode):
             val = self.eval(node.expr)
-            self.env[node.name] = val
+            self.env.declare(node.name, val)
             return val
 
         if isinstance(node, IfNode):
@@ -112,10 +126,7 @@ class Interpreter:
             return v
 
         if isinstance(node, IdentifierNode):
-            name = node.name
-            if name in self.env:
-                return self.env[name]
-            raise NameError(f"Undefined identifier: {name}")
+            return self.env.lookup(node.name)
 
         raise RuntimeError(f"Interpreter cannot handle node: {node!r}")
 
@@ -124,3 +135,7 @@ def interpret(ast, env: Optional[Dict[str, Any]] = None, output=None):
     """Convenience function: create an Interpreter and run `ast`."""
     it = Interpreter(env=env, output=output)
     return it.eval(ast)
+
+
+
+
